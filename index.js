@@ -2,6 +2,7 @@ const express=require('express');
 const bodyParser=require('body-parser');
 const app=express();
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 const password='s79Xxqe2t4GBf7k7';
 
 
@@ -36,24 +37,23 @@ app.get('/',(req,res)=>{
         const product=req.body;
         collection.insertOne(product)
         .then(result=>{
-            console.log("one product added");
-            res.send("success");
+            //console.log("one product added");
+            res.redirect("/");
         })
      })
      app.patch('/update/:id', (req, res) => {
-         console.log(req.body);
         collection.updateOne({_id: ObjectID(req.params.id)},
         {
           $set: {price: req.body.price, quantity: req.body.quantity}
         })
         .then (result => {
-          console.log(result);
+          res.send(result.modifiedCount>0);
         })
       })
      app.delete('/delete/:id',(req,res)=>{
          collection.deleteOne({_id:ObjectID(req.params.id)})
          .then(result=>{
-             console.log(result);
+            res.send(result.deletedCount>0);
          })
      })
 
